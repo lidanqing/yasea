@@ -1,6 +1,7 @@
 package net.ossrs.yasea.demo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity implements RtmpHandler.RtmpListener,
     Button btnSwitchCamera = null;
     Button btnRecord = null;
     Button btnSwitchEncoder = null;
+    Button button;
 
     private SharedPreferences sp;
     private String rtmpUrl = "rtmp://ossrs.net/" + getRandomAlphaString(3) + '/' + getRandomAlphaDigitString(5);
@@ -61,10 +63,11 @@ public class MainActivity extends Activity implements RtmpHandler.RtmpListener,
         final EditText efu = (EditText) findViewById(R.id.url);
         efu.setText(rtmpUrl);
 
-        btnPublish = (Button) findViewById(R.id.publish);
+        /*btnPublish = (Button) findViewById(R.id.publish);
         btnSwitchCamera = (Button) findViewById(R.id.swCam);
         btnRecord = (Button) findViewById(R.id.record);
         btnSwitchEncoder = (Button) findViewById(R.id.swEnc);
+        button = (Button)findViewById(R.id.button);
 
         mPublisher = new SrsPublisher((SrsCameraView) findViewById(R.id.preview));
         mPublisher.setEncodeHandler(new SrsEncodeHandler(this));
@@ -73,9 +76,17 @@ public class MainActivity extends Activity implements RtmpHandler.RtmpListener,
         mPublisher.setPreviewResolution(640, 360);
         mPublisher.setOutputResolution(360, 640);
         mPublisher.setVideoSmoothMode();
-        mPublisher.startCamera();
+        mPublisher.startCamera();*/
+        button = (Button)findViewById(R.id.button);
 
-        btnPublish.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startService(new Intent(MainActivity.this,BackgroudService.class));
+            }
+        });
+
+        /*btnPublish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (btnPublish.getText().toString().contentEquals("publish")) {
@@ -84,6 +95,7 @@ public class MainActivity extends Activity implements RtmpHandler.RtmpListener,
                     editor.putString("rtmpUrl", rtmpUrl);
                     editor.apply();
 
+                    rtmpUrl = "rtmp://118.178.122.224:1935/live/livestream";
                     mPublisher.startPublish(rtmpUrl);
                     mPublisher.startCamera();
 
@@ -139,7 +151,7 @@ public class MainActivity extends Activity implements RtmpHandler.RtmpListener,
                     btnSwitchEncoder.setText("soft encoder");
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -169,33 +181,33 @@ public class MainActivity extends Activity implements RtmpHandler.RtmpListener,
         super.onResume();
         final Button btn = (Button) findViewById(R.id.publish);
         btn.setEnabled(true);
-        mPublisher.resumeRecord();
+        //mPublisher.resumeRecord();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mPublisher.pauseRecord();
+       // mPublisher.pauseRecord();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPublisher.stopPublish();
-        mPublisher.stopRecord();
+        //mPublisher.stopPublish();
+        //mPublisher.stopRecord();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mPublisher.stopEncode();
-        mPublisher.stopRecord();
-        btnRecord.setText("record");
-        mPublisher.setScreenOrientation(newConfig.orientation);
-        if (btnPublish.getText().toString().contentEquals("stop")) {
-            mPublisher.startEncode();
-        }
-        mPublisher.startCamera();
+        //mPublisher.stopEncode();
+        //mPublisher.stopRecord();
+        //btnRecord.setText("record");
+       // mPublisher.setScreenOrientation(newConfig.orientation);
+        //if (btnPublish.getText().toString().contentEquals("stop")) {
+            //mPublisher.startEncode();
+        //}
+       // mPublisher.startCamera();
     }
 
     private static String getRandomAlphaString(int length) {
@@ -223,8 +235,8 @@ public class MainActivity extends Activity implements RtmpHandler.RtmpListener,
     private void handleException(Exception e) {
         try {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            mPublisher.stopPublish();
-            mPublisher.stopRecord();
+           // mPublisher.stopPublish();
+           // mPublisher.stopRecord();
             btnPublish.setText("publish");
             btnRecord.setText("record");
             btnSwitchEncoder.setEnabled(true);
